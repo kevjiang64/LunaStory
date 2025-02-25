@@ -1,0 +1,34 @@
+{
+  "name": "lunastory",
+  "version": "1.0.0",
+  "description": "Website to display our daily family moments with Luna",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevjiang64/LunaStory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevjiang64/LunaStory/issues"
+  },
+  "homepage": "https://github.com/kevjiang64/LunaStory#readme",
+  "dependencies": {
+    "@types/mongoose": "^5.11.96",
+    "@types/react-router-dom": "^5.3.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.5",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
