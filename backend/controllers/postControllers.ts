@@ -1,36 +1,32 @@
-import { Request, Response } from "express";
+import { Response, Request } from "express";
 import PostModel from "../models/posts";
+import { AuthenticatedRequest, Post } from "../models/interfaces";
 
-interface Post {
-  creatorId: string;
-  title: string;
-  image: string;
-  video: string;
-  caption: string;
-  rating: number;
-  comments: string[];
-}
-
-const sendPost = async (req: Request, res: Response): Promise<void> => {
+export const sendPost = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
   try {
-    const { creatorId, title, image, video, caption, rating, comments } =
-      req.body as Post;
+    const { title, imageOrVideo, caption, rating, comments } = req.body as Post;
+    const creatorId = req.user._id;
     const newPost = new PostModel({
-      creatorId,
       title,
-      image,
-      video,
+      imageOrVideo,
       caption,
       rating,
       comments,
+      creatorId,
     });
+
     await newPost.save();
     res.status(201).json(newPost);
-  } catch (error) {
-    res.status(500).json({ message: "Server Error in Send Post" });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Server Error in Send Post: " } + error.message);
   }
 };
-const getPosts = async (req: Request, res: Response) => {
+export const getPosts = async (req: Request, res: Response) => {
   try {
     const posts = await PostModel.find();
     res.status(200).json(posts);
@@ -38,33 +34,43 @@ const getPosts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server Error in Get Posts" });
   }
 };
-const getPost = async (req: Request, res: Response) => {
+export const getPostByCreatorId = async (req: Request, res: Response) => {
   try {
-    const { id } = req.body;
-    const post = await PostModel.find((post: Post) => post.creatorId === id);
+    const { id } = req.params;
+    const post = await PostModel.find({ creatorId: id });
     res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({ message: "Server Error in Get Post" });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Server Error in Get Post" } + error.message);
   }
 };
 
-const updatePost = async (req: Request, res: Response) => {
-    try {
-        const { creatorId, title, image, video, caption, rating, comments } = req.body as Post;
-        const post = await PostModel.findById(creatorId);
-        if (post) {
-            post.title = title;
-            post.image = image;
-            post.video = video;
-            post.caption = caption;
-            post.rating = rating;
-            post.comments = comments;
-            const updatedPost = await post.save();
-            res.status(200).json(updatedPost);
-        } else {
-            res.status(404).json({ message: "Post not found" });
-        }
-    }
+export const updatePost = async (req: Request, res: Response) => {
+  try {
+    const { title, imageOrVideo, caption, rating, comments } = req.body;
+    const { id } = req.params;
+    const updatedPost = await PostModel.findByIdAndUpdate(
+      { _id: id },
+      { title, imageOrVideo, caption, rating, comments },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Server Error in Update Post" } + error.message);
+  }
 };
 
-const deletePost = async (req: Request, res: Response) => {};
+export const deletePost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedPost = await PostModel.findByIdAndDelete({ _id: id });
+    res.status(200).json(deletedPost);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Server Error in Delete Post" } + error.message);
+  }
+};

@@ -1,18 +1,19 @@
 import { Router } from "express";
-import Post from "../models/posts";
+import {
+  sendPost,
+  getPosts,
+  getPostByCreatorId,
+  updatePost,
+  deletePost,
+} from "../controllers/postControllers";
+import { checkAuthenticated } from "../middleware/authMiddleware";
 
 const postRoutes = Router();
 
-postRoutes.post("/", async (req, res) => {
-  const testPost = new Post({
-    title: "Test Post",
-    image: "https://www.google.com",
-    video: "https://www.youtube.com",
-    caption: "This is a test post",
-  });
-
-  await testPost.save();
-  res.send(testPost);
-});
+postRoutes.post("/", checkAuthenticated, sendPost);
+postRoutes.get("/", checkAuthenticated, getPosts);
+postRoutes.get("/:id", checkAuthenticated, getPostByCreatorId);
+postRoutes.put("/:id", checkAuthenticated, updatePost);
+postRoutes.delete("/:id", checkAuthenticated, deletePost);
 
 export default postRoutes;

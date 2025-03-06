@@ -6,14 +6,13 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
+    imageOrVideo: {
       type: String,
-    },
-    video: {
-      type: String,
+      required: true,
     },
     caption: {
       type: String,
+      required: true,
     },
     rating: {
       type: Number,
